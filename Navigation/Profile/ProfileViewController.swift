@@ -24,8 +24,13 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        #if DEBUG
+        view.backgroundColor = .systemGreen
+        #else
+        view.backgroundColor = .systemRed
+        #endif
 
-        view.backgroundColor = .systemBackground
         
         view.addSubview(Self.postTableView)
         setupConstraints()
@@ -48,6 +53,7 @@ final class ProfileViewController: UIViewController {
         Self.postTableView.reloadData()
         Self.postTableView.refreshControl?.endRefreshing()
     }
+    
 }
 
 // MARK: - Extensions
