@@ -1,14 +1,11 @@
-//
-//  PostTableViewCell.swift
-//  Navigation
-//
-
 import UIKit
 import StorageService
+import iOSIntPackage
 
 class PostTableViewCell: UITableViewCell {
     
     private var viewCounter = 0
+    private let imageProcessor = ImageProcessor()
 
     // MARK: Visual objects
     
@@ -45,7 +42,6 @@ class PostTableViewCell: UITableViewCell {
         label.textColor = .black
         return label
     }()
-
 
     var postViews: UILabel = {
         let label = UILabel()
@@ -97,15 +93,27 @@ class PostTableViewCell: UITableViewCell {
     func configPostArray(post: Post) {
         postAuthor.text = post.author
         postDescription.text = post.description
-        postImage.image = UIImage(named: post.image)
+        
+        if let originalImage = UIImage(named: post.image) {
+            // Применение фильтра (.sepia) к изображению
+            applyFilter(to: originalImage, filter: .sepia(intensity: 0.7))
+        }
+        
         postLikes.text = "Likes: \(post.likes)"
         viewCounter = post.views
         postViews.text = "Views: \(viewCounter)"
     }
     
+    private func applyFilter(to image: UIImage, filter: ColorFilter) {
+        imageProcessor.processImage(sourceImage: image, filter: filter) { processedImage in
+            DispatchQueue.main.async {
+                self.postImage.image = processedImage
+            }
+        }
+    }
+
     func incrementPostViewsCounter() {
         viewCounter += 1
         postViews.text = "Views: \(viewCounter)"
     }
 }
-
